@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>लिपि सेतु — यूनिकोड से कृतिदेव / देवलिस</title>
+<title>लिपि सेतु — यूनिकोड और कृतिदेव / देवलिस</title>
 <style>
 :root{
   --indigo:#1f2c73; --indigo-deep:#162056; --marigold:#f5b301; --ink:#172033; --ink-soft:#4b5670;
@@ -22,6 +22,13 @@ body{margin:0;font-family:var(--ui);color:var(--ink);background:var(--paper);lin
 .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;letter-spacing:.2px}
 .brand small{font-weight:400;font-size:13px;opacity:.75;margin-left:4px}
 .offline{font-size:13px;opacity:.85;max-width:340px;line-height:1.45}
+/* direction switch */
+.modes{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;margin:4px 0 6px;border:1.5px solid rgba(255,255,255,.38);border-radius:12px}
+.modes input{position:absolute;opacity:0;pointer-events:none}
+.modes label{padding:9px 20px;border-radius:9px;cursor:pointer;font-weight:600;font-size:15.5px;color:#dfe4ff}
+.modes input:checked + label{background:#fff;color:var(--indigo)}
+.modes input:focus-visible + label{outline:3px solid var(--marigold);outline-offset:2px}
+body[data-mode="fwd"] .rev-only,body[data-mode="rev"] .fwd-only{display:none!important}
 h1{font-size:clamp(26px,4.6vw,40px);line-height:1.25;margin:18px 0 10px;font-weight:700;max-width:22em}
 .lede{margin:0 0 4px;font-size:17px;max-width:38em;opacity:.95}
 .lede-en{margin:0 0 26px;font-size:14px;opacity:.7;max-width:44em}
@@ -34,7 +41,7 @@ h1{font-size:clamp(26px,4.6vw,40px);line-height:1.25;margin:18px 0 10px;font-wei
 .tile.to{background:#fff;color:var(--ink)}
 .tile.to b{color:var(--ink-soft)}
 .tile .sample{font-size:26px;line-height:1.35;word-break:break-word}
-#specTo{font-family:"Kruti Dev 010","Devlys 010",Consolas,"Courier New",monospace;font-size:28px}
+.legacy{font-family:"Kruti Dev 010","Devlys 010",Consolas,"Courier New",monospace;font-size:28px}
 .bridge{display:block;width:100%;height:56px}
 .spec-note{font-size:13px;opacity:.75;margin:0 0 26px;max-width:46em}
 
@@ -75,12 +82,19 @@ main{padding:10px 0 56px}
 .fname{font-weight:600;word-break:break-all}
 .fstat{grid-column:1;font-size:14px;color:var(--ink-soft)}
 .results li.fail .fstat{color:var(--err)}
-.results li a.btn{grid-column:2;grid-row:1 / span 2;margin:0;text-decoration:none;white-space:nowrap}
+.acts{grid-column:2;grid-row:1 / span 2;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.acts a.btn{margin:0;text-decoration:none;white-space:nowrap}
+.btn.rm{margin-top:0;padding:7px 14px;font-size:14px;color:var(--ink-soft);border-color:#b9c1d3}
+.btn.rm:hover{background:#fdecea;border-color:var(--err);color:var(--err)}
+.listbar{display:flex;justify-content:flex-end;margin-top:16px}
+.listbar[hidden]{display:none}
+.listbar + .results{margin-top:10px}
 
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .pair label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
 textarea{width:100%;min-height:130px;padding:12px;border:1.5px solid var(--line);border-radius:8px;font:inherit;font-size:18px;line-height:1.5;resize:vertical;background:#fff;color:var(--ink)}
-#qout{background:var(--wash);font-family:"Kruti Dev 010","Devlys 010",Consolas,"Courier New",monospace}
+#qout{background:var(--wash)}
+textarea.legacy{font-size:20px}
 .qbar{display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap}
 #qwarn{font-size:13.5px;color:#8a5a00}
 
@@ -96,49 +110,61 @@ footer{padding:22px 0 40px;color:var(--ink-soft);font-size:13px;border-top:1px s
   .bridge{height:36px;transform:rotate(90deg);width:60px;margin:0 auto}
   .pair{grid-template-columns:1fr}
   .results li{grid-template-columns:1fr}
-  .results li a.btn{grid-column:1;grid-row:auto;justify-self:start;margin-top:6px}
+  .acts{grid-column:1;grid-row:auto;justify-content:flex-start;margin-top:6px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
-<body>
+<body data-mode="fwd">
 
 <header class="band">
   <div class="wrap">
     <div class="mast">
       <div class="brand">
         <svg width="34" height="24" viewBox="0 0 34 24" aria-hidden="true"><path d="M2 20 C8 2 26 2 32 20" fill="none" stroke="#f5b301" stroke-width="3" stroke-linecap="round"/><path d="M2 22h30" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>लिपि सेतु <small>Unicode → Kruti Dev / Devlys</small></span>
+        <span>लिपि सेतु <small>Unicode ⇄ Kruti Dev / Devlys</small></span>
       </div>
-      <div class="offline">यह पेज ऑफ़लाइन चलता है — आपकी फ़ाइलें कंप्यूटर से बाहर कहीं नहीं भेजी जातीं।<br>Runs offline. Your files never leave this computer.</div>
     </div>
 
-    <h1>यूनिकोड हिंदी को कृतिदेव या देवलिस में बदलें</h1>
-    <p class="lede">पूरी Word (.docx) और Excel (.xlsx) फ़ाइल एक बार में बदलें। फ़ॉन्ट का आकार, बोल्ड, टेबल और फ़ॉर्मेटिंग वैसी ही रहती है।</p>
-    <p class="lede-en">Convert whole Word and Excel files from Unicode Hindi to Kruti Dev or Devlys. Formatting is kept; English text is left alone.</p>
+    <div class="modes" role="radiogroup" aria-label="बदलने की दिशा">
+      <input type="radio" name="mode" id="m1" value="fwd" checked><label for="m1">यूनिकोड से कृतिदेव / देवलिस</label>
+      <input type="radio" name="mode" id="m2" value="rev"><label for="m2">कृतिदेव / देवलिस से यूनिकोड</label>
+    </div>
+    <h1 id="h1" data-fwd="यूनिकोड हिंदी को कृतिदेव या देवलिस में बदलें" data-rev="कृतिदेव या देवलिस के टेक्स्ट को यूनिकोड हिंदी में बदलें">यूनिकोड हिंदी को कृतिदेव या देवलिस में बदलें</h1>
+    <p class="lede" data-fwd="पूरी Word (.docx) और Excel (.xlsx) फ़ाइल एक बार में बदलें। फ़ॉन्ट का आकार, बोल्ड, टेबल और फ़ॉर्मेटिंग वैसी ही रहती है।" data-rev="पूरी Word (.docx) और Excel (.xlsx) फ़ाइल एक बार में बदलें। सिर्फ़ कृतिदेव / देवलिस वाला टेक्स्ट बदलता है, बाक़ी फ़ाइल जैसी है वैसी रहती है।">पूरी Word (.docx) और Excel (.xlsx) फ़ाइल एक बार में बदलें। फ़ॉन्ट का आकार, बोल्ड, टेबल और फ़ॉर्मेटिंग वैसी ही रहती है।</p>
+    <p class="lede-en" data-fwd="Convert whole Word and Excel files from Unicode Hindi to Kruti Dev or Devlys. Formatting is kept; English text is left alone." data-rev="Convert whole Word and Excel files from Kruti Dev or Devlys to Unicode Hindi. Only text set in those fonts changes.">Convert whole Word and Excel files from Unicode Hindi to Kruti Dev or Devlys. Formatting is kept; English text is left alone.</p>
 
     <div class="specimen" aria-label="उदाहरण">
-      <div class="tile from"><b>यूनिकोड (टाइप किया हुआ)</b><div class="sample" id="specFrom">लिपि सेतु </div></div>
+      <div class="tile from"><b id="specFromLabel">यूनिकोड (टाइप किया हुआ)</b><div class="sample" id="specFrom"></div></div>
       <svg class="bridge" viewBox="0 0 84 56" aria-hidden="true"><path d="M6 44 C20 2 64 2 78 44" fill="none" stroke="#f5b301" stroke-width="4" stroke-linecap="round"/><path d="M68 34 L78 44 L66 47" fill="none" stroke="#f5b301" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div class="tile to"><b id="specLabel">Kruti Dev 010</b><div class="sample" id="specTo"></div></div>
     </div>
-    <p class="spec-note">दाईं ओर हिंदी की जगह अंग्रेज़ी अक्षर दिखें तो इसका मतलब सिर्फ़ इतना है कि इस कंप्यूटर में वह फ़ॉन्ट इंस्टॉल नहीं है। बनी हुई फ़ाइल सही रहेगी।</p>
+    <p class="spec-note" id="specNote" data-fwd="दाईं ओर हिंदी की जगह अंग्रेज़ी अक्षर दिखें तो इसका मतलब सिर्फ़ इतना है कि इस कंप्यूटर में वह फ़ॉन्ट इंस्टॉल नहीं है। बनी हुई फ़ाइल सही रहेगी।" data-rev="बाईं ओर हिंदी की जगह अंग्रेज़ी अक्षर दिखें तो इसका मतलब सिर्फ़ इतना है कि इस कंप्यूटर में वह फ़ॉन्ट इंस्टॉल नहीं है। बदलने के लिए फ़ॉन्ट का इंस्टॉल होना ज़रूरी नहीं है।"></p>
   </div>
 </header>
 
 <main class="wrap">
 
   <section class="step" aria-labelledby="s1">
-    <div class="step-head" id="s1"><span class="n">1</span>फ़ॉन्ट चुनें<span class="en">Choose the target font</span></div>
+    <div class="step-head" id="s1"><span class="n">1</span><span data-fwd="फ़ॉन्ट चुनें" data-rev="यूनिकोड फ़ॉन्ट चुनें">फ़ॉन्ट चुनें</span><span class="en" data-fwd="Choose the target font" data-rev="Choose the Unicode font for the result">Choose the target font</span></div>
     <div>
-      <fieldset class="fonts">
+      <fieldset class="fonts fwd-only">
         <legend>फ़ॉन्ट</legend>
         <input type="radio" name="font" id="f1" value="Kruti Dev 010" checked><label class="opt" for="f1">Kruti Dev 010<span>कृतिदेव</span></label>
         <input type="radio" name="font" id="f2" value="Devlys 010"><label class="opt" for="f2">Devlys 010<span>देवलिस</span></label>
         <input type="radio" name="font" id="f3" value="custom"><label class="opt" for="f3">दूसरा नाम<span>Other font name</span></label>
       </fieldset>
-      <input type="text" id="customName" placeholder="जैसे: Kruti Dev 016" aria-label="फ़ॉन्ट का नाम" value="Kruti Dev 010">
-      <p class="hint">Kruti Dev 010 और Devlys 010 एक ही कोड-तालिका पर चलते हैं, इसलिए दोनों में हिंदी एक जैसी बनती है। बस फ़ाइल में फ़ॉन्ट का नाम अलग लगता है।</p>
+      <input type="text" id="customName" class="fwd-only" placeholder="जैसे: Kruti Dev 016" aria-label="फ़ॉन्ट का नाम" value="Kruti Dev 010">
+      <p class="hint fwd-only"></p>
+
+      <fieldset class="fonts rev-only">
+        <legend>यूनिकोड फ़ॉन्ट</legend>
+        <input type="radio" name="ufont" id="u1" value="Mangal" checked><label class="opt" for="u1">Mangal<span>मंगल · सभी Windows में</span></label>
+        <input type="radio" name="ufont" id="u2" value="Nirmala UI"><label class="opt" for="u2">Nirmala UI<span>निर्मला · Windows 8 और नए में</span></label>
+        <input type="radio" name="ufont" id="u3" value="custom"><label class="opt" for="u3">दूसरा नाम<span>Other font name</span></label>
+      </fieldset>
+      <input type="text" id="customUName" class="rev-only" placeholder="जैसे: Noto Sans Devanagari" aria-label="यूनिकोड फ़ॉन्ट का नाम" value="Mangal" style="margin-top:10px;width:100%;max-width:320px;padding:9px 12px;border:1.5px solid var(--line);border-radius:6px;font:inherit;display:none">
+      <p class="hint rev-only">फ़ाइल में जिस टेक्स्ट का फ़ॉन्ट Kruti Dev या Devlys है, सिर्फ़ वही बदलेगा। Calibri, Arial या Mangal वाला टेक्स्ट जैसा है वैसा रहेगा।</p>
     </div>
   </section>
 
@@ -151,8 +177,9 @@ footer{padding:22px 0 40px;color:var(--ink-soft);font-size:13px;border-top:1px s
         <button type="button" class="btn" id="pick">फ़ाइलें चुनें</button>
         <input type="file" id="fileInput" accept=".docx,.xlsx" multiple>
       </div>
+      <div class="listbar" id="listbar" hidden><button type="button" class="btn ghost rm" id="clearAll">सभी हटाएँ</button></div>
       <ul class="results" id="results" aria-live="polite"></ul>
-      <p class="hint">मूल फ़ाइल नहीं बदलती। नई फ़ाइल अलग नाम से डाउनलोड होती है।</p>
+      <p class="hint">मूल फ़ाइल नहीं बदलती। नई फ़ाइल अलग नाम से डाउनलोड होती है। “हटाएँ” सिर्फ़ इस सूची से हटाता है, आपकी कंप्यूटर वाली फ़ाइल को नहीं।</p>
     </div>
   </section>
 
@@ -160,18 +187,21 @@ footer{padding:22px 0 40px;color:var(--ink-soft);font-size:13px;border-top:1px s
     <div class="step-head" id="s3"><span class="n">3</span>टेक्स्ट जाँचें<span class="en">Quick text check (optional)</span></div>
     <div>
       <div class="pair">
-        <div><label for="qin">यूनिकोड टेक्स्ट</label><textarea id="qin" placeholder="यहाँ हिंदी पेस्ट या टाइप करें…" spellcheck="false"></textarea></div>
-        <div><label for="qout">बदला हुआ टेक्स्ट</label><textarea id="qout" readonly spellcheck="false"></textarea></div>
+        <div><label for="qin" id="qinLabel">यूनिकोड टेक्स्ट</label><textarea id="qin" placeholder="यहाँ हिंदी पेस्ट या टाइप करें…" spellcheck="false"></textarea></div>
+        <div><label for="qout" id="qoutLabel">बदला हुआ टेक्स्ट</label><textarea id="qout" readonly spellcheck="false"></textarea></div>
       </div>
       <div class="qbar"><button type="button" class="btn ghost" id="copy">कॉपी करें</button><span id="qwarn" role="status"></span></div>
-      <p class="hint">इसे PageMaker, CorelDRAW या किसी भी ऐसे दस्तावेज़ में चिपकाएँ जिसमें कृतिदेव / देवलिस फ़ॉन्ट लगा हो।</p>
+      <p class="hint" id="qhint" data-fwd="इसे PageMaker, CorelDRAW या किसी भी ऐसे दस्तावेज़ में चिपकाएँ जिसमें कृतिदेव / देवलिस फ़ॉन्ट लगा हो।" data-rev="कृतिदेव / देवलिस में लिखा टेक्स्ट कॉपी करके बाईं ओर चिपकाएँ। यूनिकोड हिंदी दाईं ओर मिलेगी।"></p>
     </div>
   </section>
 
   <details>
     <summary>ध्यान रखें</summary>
     <ul>
-      <li>सिर्फ़ यूनिकोड देवनागरी बदलती है। अंग्रेज़ी शब्द और संख्याएँ अपने फ़ॉन्ट में ही रहते हैं। देवनागरी अंक (०–९) 0–9 बन जाते हैं।</li>
+      <li class="fwd-only">सिर्फ़ यूनिकोड देवनागरी बदलती है। अंग्रेज़ी शब्द और संख्याएँ अपने फ़ॉन्ट में ही रहते हैं। देवनागरी अंक (०–९) 0–9 बन जाते हैं।</li>
+      <li class="rev-only">फ़ाइल में फ़ॉन्ट का नाम देखकर तय होता है कि कौन-सा टेक्स्ट बदलना है। Kruti Dev (010, 016 आदि) और Devlys पहचाने जाते हैं। Chanakya, Shusha, Agra जैसे दूसरे पुराने फ़ॉन्ट की कोड-तालिका अलग है, इसलिए उन्हें यह टूल छूता नहीं।</li>
+      <li class="rev-only">कृतिदेव में “:” और विसर्ग “ः” का चिह्न एक ही (%) होता है। टूल संदर्भ देखकर चुनता है: अतः, पुनः जैसे शब्दों में ः, बाक़ी जगह “:”। ऐसे शब्द एक बार जाँच लें।</li>
+      <li class="rev-only">अक्षर का आकार वही रखा जाता है। मंगल का अक्षर कृतिदेव के बराबर साइज़ पर कुछ बड़ा दिख सकता है, ज़रूरत हो तो साइज़ घटा लें।</li>
       <li>पुरानी .doc या .xls फ़ाइल हो तो पहले Word / Excel में खोलकर “Save As” से .docx / .xlsx बनाएँ।</li>
       <li>Excel के फ़ॉर्मूला वाले सेल नहीं बदलते, क्योंकि उनका नतीजा फ़ॉर्मूला से आता है। ऐसे सेल का मान चिपकाकर (Paste Values) बदल लें।</li>
       <li>Word में हेडर, फ़ूटर, टेबल, टेक्स्ट-बॉक्स और फ़ुटनोट भी बदलते हैं। चित्रों के भीतर का टेक्स्ट नहीं बदलता।</li>
@@ -636,6 +666,282 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     return stats;
   }
 
+  /* ================= reverse: Kruti Dev / Devlys -> Unicode ================= */
+  var R_CONS = {}, R_HALF = {};
+  Object.keys(FULL).forEach(function (u) { if (FULL[u].length === 1) R_CONS[FULL[u]] = u; });
+  Object.keys(HALF).forEach(function (u) { R_HALF[HALF[u]] = u + HAL; });
+  var R_LIGF = {
+    'K': 'ज्ञ', 'J': 'श्र', '=': 'त्र', ')': 'द्ध', '|': 'द्य', '}': 'द्व', '\u00ed': 'द्द',
+    '\u00e0': 'ह्न', '\u00e1': 'ह्य', '\u00e3': 'ह्म', '\u00ea': 'ट्ट', '\u00eb': 'ट्ठ',
+    '\u00ec': 'ड्ड', '\u00ef': 'ड्ढ', '\u00d8': 'क्र', '\u00dd': 'फ्र', '\u00e4': 'क्त',
+    '\u00e9': 'न्न', '\u00f4': 'क्क', '\u00cc': 'द्द', '\u00cd': 'ट्ट', '\u00ce': 'ट्ठ',
+    '\u00cf': 'ड्ड', '\u00d4': 'ड्ढ', '\u00c4': 'घ', '\u00e6': 'द्र', '\u00e7': 'प्र', '\u00c1': 'प्र'
+  };
+  var R_HALFLIG = {
+    '{': 'क्ष्', '\u00ab': 'त्र्', '\u00d9': 'त्त्', '\u2122': 'न्न्', '\u00cb': 'ध्',
+    '\u00e8': 'ध्', '\u00d6': 'झ्', '\u00dc': 'श्'
+  };
+  var R_CM = {                       // consonant with its own vowel sign built in
+    '#': ['र', 'ु'], ':': ['र', 'ू'], '\u2014': ['क', 'ृ'], '\u2013': ['द', 'ृ'],
+    '\u00e2': ['ह', 'ृ'], '\u00d1': ['क', 'ृ']
+  };
+  var R_SUB = { 'z': '्र', '\u00aa': '्र', '\u00ee': '्य', '\u00d3': '्य' };
+  var R_VOW = { 'v': 'अ', 'b': 'इ', 'm': 'उ', '\u00c5': 'ऊ', '_': 'ऋ', ',': 'ए', '\u00c3': 'ई' };
+  var R_MODS = { 'a': 'ं', '\u00a1': 'ँ' };
+  var R_MATRA = { 'k': 1, 'h': 1, 'q': 1, 'w': 1, '`': 1, 's': 1, 'S': 1, 'W': 1, '\u201a': 1 };
+  var R_MATRA_SIMPLE = { 'k': 'ा', 'h': 'ी', 'q': 'ु', 'w': 'ू', '`': 'ृ', 's': 'े', 'S': 'ै', 'W': 'ॅ', '\u201a': 'ॉ' };
+  var R_PUNCT = {
+    '\u00bc': '(', '\u00bd': ')', '\u00bf': '{', '\u00c0': '}', '\u00be': '=', 'A': '।',
+    '-': '.', '&': '-', ']': ',', '@': '/', '\\': '?', '^': '\u2018', '*': '\u2019',
+    '\u00de': '\u201c', '\u00df': '\u201d', '(': ';', '\u0152': '॰', '\u00f1': '॰',
+    '\u2022': 'ऽ', '\u00b7': 'ऽ', '\u2219': 'ऽ',
+    '\u00e5': '०', '\u0192': '१', '\u201e': '२', '\u2026': '३', '\u2020': '४',
+    '\u2021': '५', '\u02c6': '६', '\u2030': '७', '\u0160': '८', '\u2039': '९'
+  };
+
+  /* Kruti spellings of common words that end in visarga (a following '%' is ः, not a colon) */
+  var VISARGA_WORDS = ['vr', 'iqu', 'izk;', 'izkr', '\u00d8e\'k', 'fo\'ks"kr', 'lkekU;r', 'eq[;r',
+    'oLrqr', 'Lor', 'vUrr', 'izFker', 'iw.kZr', 'loZr', 'vf/kdr', 'v', 'ue', 'lk;a izkr'];
+
+  function kruti2uni(src) {
+    var out = '', cur = null, pend = { pre: false, reph: false, mods: '' }, i = 0, n = src.length, ch;
+
+    function render(c) {
+      if (c.type === 'V') return c.vowel + c.mods;
+      return (c.reph ? 'र्' : '') + c.units.join('') + (c.pre ? 'ि' : '') + c.matra + c.mods;
+    }
+    function flush() { if (cur) { out += render(cur); cur = null; } }
+    function clearPend() {
+      out += (pend.reph ? 'र्' : '') + (pend.pre ? 'ि' : '') + pend.mods;
+      pend = { pre: false, reph: false, mods: '' };
+    }
+    function newSyl(type) {
+      flush();
+      cur = { type: type, units: [], open: false, matra: '', vowel: '', reph: pend.reph, pre: pend.pre, mods: pend.mods };
+      pend = { pre: false, reph: false, mods: '' };
+    }
+    function newVowel(v) { flush(); clearPend(); cur = { type: 'V', vowel: v, mods: '' }; }
+    function isOpen() { return cur && cur.type === 'C' && cur.open; }
+    function addFull(u) {
+      if (isOpen()) { cur.units.push(u); cur.open = false; }
+      else { newSyl('C'); cur.units.push(u); }
+    }
+    function addHalf(u) {
+      if (isOpen()) cur.units.push(u);
+      else { newSyl('C'); cur.units.push(u); cur.open = true; }
+    }
+    function stripHal(u) { return u.charAt(u.length - 1) === HAL ? u.slice(0, -1) : u; }
+
+    function doMatra(m) {
+      if (cur && cur.type === 'V') {
+        var v = cur.vowel, r = null;
+        if (m === 'k' && v === 'अ') r = 'आ';
+        else if (m === 's' && v === 'आ') r = 'ओ';
+        else if (m === 's' && v === 'ए') r = 'ऐ';
+        else if (m === 'S' && v === 'आ') r = 'औ';
+        else if (m === 'W' && v === 'आ') r = 'ऑ';
+        else if (m === '\u201a' && v === 'अ') r = 'ऑ';
+        if (r) { cur.vowel = r; return; }
+      }
+      if (m === 'k' && isOpen()) {               // half glyph + stem = full consonant
+        cur.units[cur.units.length - 1] = stripHal(cur.units[cur.units.length - 1]);
+        cur.open = false; return;
+      }
+      if (cur && cur.type === 'C' && !cur.open) {
+        var mt = cur.matra;
+        if (m === 's' && mt === 'ा') { cur.matra = 'ो'; return; }
+        if (m === 'S' && mt === 'ा') { cur.matra = 'ौ'; return; }
+        if (m === 'W' && mt === 'ा') { cur.matra = 'ॉ'; return; }
+        if (mt === '') { cur.matra = R_MATRA_SIMPLE[m]; return; }
+      }
+      flush(); clearPend(); out += R_MATRA_SIMPLE[m];
+    }
+
+    while (i < n) {
+      ch = src.charAt(i);
+      if (R_CONS[ch] !== undefined) { addFull(R_CONS[ch]); i++; continue; }
+      if (R_LIGF[ch] !== undefined) { addFull(R_LIGF[ch]); i++; continue; }
+      if (R_HALF[ch] !== undefined) { addHalf(R_HALF[ch]); i++; continue; }
+      if (R_HALFLIG[ch] !== undefined) { addHalf(R_HALFLIG[ch]); i++; continue; }
+      if (R_CM[ch] !== undefined) { addFull(R_CM[ch][0]); cur.matra = R_CM[ch][1]; i++; continue; }
+      if (R_VOW[ch] !== undefined) { newVowel(R_VOW[ch]); i++; continue; }
+      if (R_MATRA[ch] !== undefined) { doMatra(ch); i++; continue; }
+      if (R_SUB[ch] !== undefined) {
+        if (cur && cur.type === 'C' && cur.units.length) {
+          cur.units[cur.units.length - 1] = stripHal(cur.units[cur.units.length - 1]) + R_SUB[ch];
+          cur.open = false;
+        } else { flush(); clearPend(); out += R_SUB[ch]; }
+        i++; continue;
+      }
+      if (R_MODS[ch] !== undefined) {
+        if (cur) cur.mods += R_MODS[ch]; else { clearPend(); out += R_MODS[ch]; }
+        i++; continue;
+      }
+      if (ch === '%') {
+        /* '%' is both visarga (ः) and colon (:) in Kruti Dev. Decide from context. */
+        var prev = i > 0 ? src.charAt(i - 1) : '', next = src.charAt(i + 1), asVisarga = false;
+        if (prev === '' || /\s/.test(prev)) { flush(); clearPend(); out += ':'; i++; continue; }
+        if (/[0-9]/.test(prev)) { flush(); clearPend(); out += '%'; i++; continue; }
+        if (next && (R_CONS[next] !== undefined || R_HALF[next] !== undefined || R_LIGF[next] !== undefined ||
+            R_HALFLIG[next] !== undefined || R_VOW[next] !== undefined || R_CM[next] !== undefined || /[A-Za-z\u00c0-\u00ff]/.test(next))) asVisarga = true;   // inside a word: दुःख, निःशुल्क
+        else {
+          var wm = /[^\s\u00bc\u00bd^*\u00de\u00df]+$/.exec(src.slice(0, i));   // the word just typed
+          asVisarga = !!wm && VISARGA_WORDS.indexOf(wm[0]) >= 0;                    // अतः, पुनः, विशेषतः ...
+        }
+        if (asVisarga) { if (cur) cur.mods += 'ः'; else { clearPend(); out += 'ः'; } }
+        else { flush(); clearPend(); out += ':'; }
+        i++; continue;
+      }
+      if (ch === 'f') { flush(); clearPend(); pend.pre = true; i++; continue; }
+      if (ch === 'Z') {
+        if (cur && cur.type === 'V' && cur.vowel === 'इ' && !cur.mods) cur.vowel = 'ई';
+        else if (cur && cur.type === 'C') cur.reph = true;
+        else { flush(); clearPend(); out += 'र्'; }
+        i++; continue;
+      }
+      if (ch === '~') {
+        if (cur && cur.type === 'C' && cur.units.length && !cur.open) {
+          cur.units[cur.units.length - 1] += HAL; cur.open = true;
+        } else if (!isOpen()) { flush(); clearPend(); out += HAL; }
+        i++; continue;
+      }
+      if (ch === '+') {
+        if (cur && cur.type === 'C' && cur.units.length) {
+          var lu = cur.units[cur.units.length - 1];
+          cur.units[cur.units.length - 1] = lu.charAt(lu.length - 1) === HAL ? lu.slice(0, -1) + NUKTA + HAL : lu + NUKTA;
+        } else { flush(); clearPend(); out += NUKTA; }
+        i++; continue;
+      }
+      if (ch === '\u00b1') {                        // reph + anusvara glyph
+        if (cur && cur.type === 'V' && cur.vowel === 'इ') { cur.vowel = 'ई'; cur.mods += 'ं'; }
+        else if (cur && cur.type === 'C') { cur.reph = true; cur.mods += 'ं'; }
+        else { flush(); clearPend(); out += 'र्ं'; }
+        i++; continue;
+      }
+      if (ch === '\u00c8') {                        // ीं glyph
+        if (cur && cur.type === 'C' && !cur.matra) { cur.matra = 'ी'; cur.mods += 'ं'; }
+        else { flush(); clearPend(); out += 'ीं'; }
+        i++; continue;
+      }
+      if (ch === '\u00ca') {                        // ी + reph glyph
+        if (cur && cur.type === 'C' && !cur.matra) { cur.matra = 'ी'; cur.reph = true; }
+        else { flush(); clearPend(); out += 'ीर्'; }
+        i++; continue;
+      }
+      if (ch === '\u00c7' || ch === '\u00c6' || ch === '\u00c9') {   // ि(+ं) / र्ि(+ं) prefix glyphs
+        flush(); clearPend();
+        pend.pre = true;
+        if (ch !== '\u00c7') pend.reph = true;
+        if (ch !== '\u00c6') pend.mods = 'ं';
+        i++; continue;
+      }
+      if (R_PUNCT[ch] !== undefined) {
+        flush(); clearPend();
+        if (ch === 'A' && src.charAt(i + 1) === 'A') { out += '॥'; i += 2; continue; }
+        out += R_PUNCT[ch]; i++; continue;
+      }
+      flush(); clearPend(); out += ch; i++;
+    }
+    flush(); clearPend();
+    return out.normalize('NFC');
+  }
+
+  /* which fonts hold Kruti Dev–layout text */
+  function isLegacyFont(name) { return !!name && /kruti\s*dev|krutidev|dev\s*lys|devlys/i.test(name); }
+
+  /* ----- Word: resolve the font a run really uses (run > char style > para style > defaults) ----- */
+  function readRPr(rp) {
+    var o = {}, rf = elemKids(rp, 'w:rFonts')[0], sz = elemKids(rp, 'w:sz')[0],
+      b = elemKids(rp, 'w:b')[0], it = elemKids(rp, 'w:i')[0], f;
+    if (rf) { f = rf.getAttribute('w:ascii') || rf.getAttribute('w:hAnsi'); if (f) o.font = f; }
+    if (sz && sz.getAttribute('w:val')) o.sz = sz.getAttribute('w:val');
+    if (b) o.b = !/^(0|false|off)$/i.test(b.getAttribute('w:val') || '');
+    if (it) o.i = !/^(0|false|off)$/i.test(it.getAttribute('w:val') || '');
+    return o;
+  }
+  async function buildStyleCtx(zip) {
+    var ctx = { styles: {}, def: {}, defaultPara: null }, f = zip.file('word/styles.xml');
+    if (!f) return ctx;
+    var doc = parseXml(await f.async('string')), dd = doc.getElementsByTagName('w:rPrDefault')[0];
+    if (dd) { var rp = elemKids(dd, 'w:rPr')[0]; if (rp) ctx.def = readRPr(rp); }
+    toArray(doc.getElementsByTagName('w:style')).forEach(function (st) {
+      var id = st.getAttribute('w:styleId'), b = elemKids(st, 'w:basedOn')[0], rp2 = elemKids(st, 'w:rPr')[0];
+      ctx.styles[id] = { basedOn: b ? b.getAttribute('w:val') : null, rpr: rp2 ? readRPr(rp2) : {} };
+      if (st.getAttribute('w:type') === 'paragraph' && st.getAttribute('w:default') === '1') ctx.defaultPara = id;
+    });
+    return ctx;
+  }
+  function styleChain(ctx, id) {
+    var out = [], seen = {};
+    while (id && ctx.styles[id] && !seen[id]) { seen[id] = 1; out.push(ctx.styles[id].rpr); id = ctx.styles[id].basedOn; }
+    return out;
+  }
+  function effectiveProps(run, rPr, ctx) {
+    var layers = [], p;
+    if (rPr) {
+      layers.push(readRPr(rPr));
+      var rs = elemKids(rPr, 'w:rStyle')[0];
+      if (rs) layers = layers.concat(styleChain(ctx, rs.getAttribute('w:val')));
+    }
+    p = run.parentNode;
+    while (p && p.nodeName !== 'w:p') p = p.parentNode;
+    if (p) {
+      var pPr = elemKids(p, 'w:pPr')[0], ps = pPr ? elemKids(pPr, 'w:pStyle')[0] : null;
+      layers = layers.concat(styleChain(ctx, ps ? ps.getAttribute('w:val') : ctx.defaultPara));
+    }
+    layers.push(ctx.def || {});
+    var eff = {};
+    ['font', 'sz', 'b', 'i'].forEach(function (k) {
+      for (var j = 0; j < layers.length; j++) if (layers[j][k] !== undefined) { eff[k] = layers[j][k]; break; }
+    });
+    return eff;
+  }
+  function applyUnicodeRPr(doc, rPr, font, eff) {
+    var rf = rprEnsure(doc, rPr, 'rFonts'), i, attrs = toArray(rf.attributes);
+    for (i = 0; i < attrs.length; i++) rf.removeAttribute(attrs[i].name);
+    ['ascii', 'hAnsi', 'cs', 'eastAsia'].forEach(function (a) { rf.setAttributeNS(W_NS, 'w:' + a, font); });
+    // Devanagari is a complex script in Word: size / bold / italic live in the *Cs slots
+    if (eff.sz) rprEnsure(doc, rPr, 'szCs').setAttributeNS(W_NS, 'w:val', eff.sz);
+    if (eff.b) rprEnsure(doc, rPr, 'bCs');
+    if (eff.i) rprEnsure(doc, rPr, 'iCs');
+    var lang = rprEnsure(doc, rPr, 'lang');
+    if (!lang.getAttribute('w:bidi')) lang.setAttributeNS(W_NS, 'w:bidi', 'hi-IN');
+  }
+  function convertWordXmlReverse(xml, font, ctx, stats) {
+    var doc = parseXml(xml), before = stats.parts;
+    if (!doc.getElementsByTagName('w:t').length) return xml;
+    removeWs(doc); mergeRuns(doc);
+    toArray(doc.getElementsByTagName('w:r')).forEach(function (run) {
+      var kids = elemKids(run), rPr = null, ts = [];
+      kids.forEach(function (k) { if (k.nodeName === 'w:rPr') rPr = k; else if (k.nodeName === 'w:t') ts.push(k); });
+      if (!ts.length) return;
+      var eff = effectiveProps(run, rPr, ctx);
+      if (!isLegacyFont(eff.font)) return;
+      ts.forEach(function (t) {
+        var txt = t.textContent;
+        if (!txt) return;
+        while (t.firstChild) t.removeChild(t.firstChild);
+        t.appendChild(doc.createTextNode(kruti2uni(txt)));
+        t.setAttributeNS(XML_NS, 'xml:space', 'preserve');
+      });
+      if (!rPr) { rPr = doc.createElementNS(W_NS, 'w:rPr'); run.insertBefore(rPr, run.firstChild); }
+      applyUnicodeRPr(doc, rPr, font, eff);
+      stats.parts++;
+    });
+    return stats.parts === before ? xml : serializeXml(doc);
+  }
+  async function convertDocxReverse(zip, font) {
+    var stats = { parts: 0 }, ctx = await buildStyleCtx(zip), names = Object.keys(zip.files);
+    for (var i = 0; i < names.length; i++) {
+      var nm = names[i];
+      if (/^word\/(document|header\d*|footer\d*|footnotes|endnotes)\.xml$/.test(nm)) {
+        var xml = await zip.file(nm).async('string'), out = convertWordXmlReverse(xml, font, ctx, stats);
+        if (out !== xml) zip.file(nm, out);
+      }
+    }
+    return stats;
+  }
+
   /* ---------- Excel (.xlsx) ---------- */
   var S_NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
 
@@ -654,7 +960,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
   function splitRef(ref) { var m = /^([A-Z]+)(\d+)$/.exec(ref); return m ? { col: colToNum(m[1]), row: parseInt(m[2], 10) } : null; }
 
   async function convertXlsx(zip, font, opts) {
-    var stats = { parts: 0 }, i;
+    var stats = { parts: 0 }, i, reverse = !!(opts && opts.reverse);
     var stylesFile = zip.file('xl/styles.xml');
     if (!stylesFile) throw new Error('styles.xml missing');
     var stylesDoc = parseXml(await stylesFile.async('string'));
@@ -726,6 +1032,43 @@ https://github.com/nodeca/pako/blob/main/LICENSE
       return rp;
     }
 
+    function fontNameOf(sIdx) {
+      var nm = elemKids(baseFontFor(sIdx), 'name')[0];
+      return nm ? nm.getAttribute('val') : '';
+    }
+    function setCellText(c, si, inline, vEl, doc, text) {
+      c.setAttribute('s', String(krutiStyle(parseInt(c.getAttribute('s') || '0', 10))));
+      if (inline) {
+        elemKids(si).forEach(function (k) { si.removeChild(k); });
+        var tt = doc.createElementNS(S_NS, 't'); tt.setAttributeNS(XML_NS, 'xml:space', 'preserve');
+        tt.appendChild(doc.createTextNode(text)); si.appendChild(tt);
+      } else vEl.textContent = String(sstIndex(text));
+    }
+    /* Kruti/Devlys -> Unicode for one cell; returns true when the cell changed */
+    function reverseCell(c, si, runs, full, sIdx, inline, vEl, doc) {
+      var cellFont = fontNameOf(sIdx), rich = runs.length > 1 || (runs.length === 1 && runs[0].rPr);
+      if (!rich) {
+        if (!full || !isLegacyFont(cellFont)) return false;
+        setCellText(c, si, inline, vEl, doc, kruti2uni(full));
+        return true;
+      }
+      var any = false, isEl = doc.createElementNS(S_NS, 'is'), base = baseFontFor(sIdx);
+      runs.forEach(function (r) {
+        var rf = r.rPr ? elemKids(r.rPr, 'rFont')[0] : null, nameHere = rf ? rf.getAttribute('val') : cellFont;
+        var leg = isLegacyFont(nameHere) && r.text !== '';
+        var rEl = doc.createElementNS(S_NS, 'r');
+        rEl.appendChild(r.rPr ? rPrFromRun(doc, r.rPr, leg) : rPrFromFont(doc, base, leg));
+        var te = doc.createElementNS(S_NS, 't'); te.setAttributeNS(XML_NS, 'xml:space', 'preserve');
+        te.appendChild(doc.createTextNode(leg ? kruti2uni(r.text) : r.text));
+        rEl.appendChild(te); isEl.appendChild(rEl);
+        if (leg) any = true;
+      });
+      if (!any) return false;
+      elemKids(c).forEach(function (k) { if (k.nodeName === 'v' || k.nodeName === 'is') c.removeChild(k); });
+      c.setAttribute('t', 'inlineStr'); c.appendChild(isEl);
+      return true;
+    }
+
     var sheetDocs = {}, names = Object.keys(zip.files);
     for (i = 0; i < names.length; i++) {
       var nm = names[i];
@@ -738,8 +1081,9 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         else if (t === 'inlineStr') { si = elemKids(c, 'is')[0]; inline = true; }
         if (!si) return;
         var runs = siRuns(si), full = runs.map(function (r) { return r.text; }).join('');
-        if (!DEV_RE.test(full)) return;
         var sIdx = parseInt(c.getAttribute('s') || '0', 10);
+        if (reverse) { if (reverseCell(c, si, runs, full, sIdx, inline, vEl, doc)) { stats.parts++; changed = true; } return; }
+        if (!DEV_RE.test(full)) return;
         var rich = runs.length > 1 || (runs.length === 1 && runs[0].rPr);
         var segs = rich ? null : segmentText(full);
         if (!rich && segs && segs.length === 1 && segs[0].k) {
@@ -798,7 +1142,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         var txt = null, t = c.getAttribute('t');
         if (t === 'inlineStr') { var is = elemKids(c, 'is')[0]; if (is) txt = siRuns(is).map(function (r) { return r.text; }).join(''); }
         else if (t === 's') { var v = elemKids(c, 'v')[0]; if (v && sis[parseInt(v.textContent, 10)]) txt = siRuns(sis[parseInt(v.textContent, 10)]).map(function (r) { return r.text; }).join(''); }
-        if (txt !== null && txt !== col.getAttribute('name') && DEV_RE.test(col.getAttribute('name') || '') ) {
+        if (txt !== null && txt !== col.getAttribute('name') && (reverse ? DEV_RE.test(txt) : DEV_RE.test(col.getAttribute('name') || ''))) {
           col.setAttribute('name', txt); tChanged = true;
         }
       });
@@ -819,6 +1163,10 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     segmentText: segmentText,          // Devanagari-only conversion, other text untouched
     convertDocx: convertDocx,
     convertXlsx: convertXlsx,
+    toUnicode: kruti2uni,                                   // Kruti Dev / Devlys text -> Unicode
+    convertDocxToUnicode: convertDocxReverse,
+    convertXlsxToUnicode: function (zip, font) { return convertXlsx(zip, font, { reverse: true }); },
+    isLegacyFont: isLegacyFont,
     hasDevanagari: function (s) { return DEV_RE.test(s); }
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -827,37 +1175,75 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
+  var SAMPLE = 'लिपि सेतु';
 
-  function currentFont() {
+  function mode() { return document.querySelector('input[name="mode"]:checked').value; }   // 'fwd' or 'rev'
+  function legacyFont() {
     var v = document.querySelector('input[name="font"]:checked').value;
     if (v === 'custom') return ($('customName').value || '').trim() || 'Kruti Dev 010';
     return v;
   }
-  function fontStack() {
-    var f = currentFont().replace(/"/g, ''), list = [f], extra = ['Kruti Dev 010', 'Devlys 010'], i;
+  function uniFont() {
+    var v = document.querySelector('input[name="ufont"]:checked').value;
+    if (v === 'custom') return ($('customUName').value || '').trim() || 'Mangal';
+    return v;
+  }
+  function legacyStack() {
+    var f = legacyFont().replace(/"/g, ''), list = [f], extra = ['Kruti Dev 010', 'Devlys 010'], i;
     for (i = 0; i < extra.length; i++) if (extra[i] !== f) list.push(extra[i]);
     return '"' + list.join('","') + '",Consolas,"Courier New",monospace';
   }
+  function legacyStackRev() { return '"Kruti Dev 010","Devlys 010",Consolas,"Courier New",monospace'; }
+  function uniStack() {
+    return '"' + uniFont().replace(/"/g, '') + '","Mangal","Nirmala UI","Noto Sans Devanagari",sans-serif';
+  }
 
   function refreshSpecimen() {
-    var from = $('specFrom').textContent;
-    $('specTo').textContent = LipiCore.convertText(from);
-    $('specTo').style.fontFamily = fontStack();
-    $('specLabel').textContent = currentFont() + ' में';
-    $('qout').style.fontFamily = fontStack();
+    var fwd = mode() === 'fwd', conv = LipiCore.convertText(SAMPLE);
+    $('specFrom').textContent = fwd ? SAMPLE : conv;
+    $('specTo').textContent = fwd ? conv : SAMPLE;
+    $('specFrom').className = 'sample' + (fwd ? '' : ' legacy');
+    $('specTo').className = 'sample' + (fwd ? ' legacy' : '');
+    $('specFrom').style.fontFamily = fwd ? '' : legacyStackRev();
+    $('specTo').style.fontFamily = fwd ? legacyStack() : uniStack();
+    $('specFromLabel').textContent = fwd ? 'यूनिकोड (टाइप किया हुआ)' : 'कृतिदेव / देवलिस (पुराना फ़ॉन्ट)';
+    $('specLabel').textContent = fwd ? legacyFont() + ' में' : 'यूनिकोड (' + uniFont() + ')';
   }
   function refreshQuick() {
-    var t = $('qin').value;
-    $('qout').value = LipiCore.convertText(t);
-    $('qwarn').textContent = /[A-Za-z]/.test(t) ? 'अंग्रेज़ी अक्षर कृतिदेव / देवलिस फ़ॉन्ट में हिंदी जैसे दिखेंगे। उन्हें अलग रखें।' : '';
+    var fwd = mode() === 'fwd', t = $('qin').value;
+    $('qout').value = fwd ? LipiCore.convertText(t) : LipiCore.toUnicode(t);
+    $('qwarn').textContent = (fwd && /[A-Za-z]/.test(t)) ? 'अंग्रेज़ी अक्षर कृतिदेव / देवलिस फ़ॉन्ट में हिंदी जैसे दिखेंगे। उन्हें अलग रखें।' : '';
   }
-  Array.prototype.forEach.call(document.querySelectorAll('input[name="font"]'), function (r) {
-    r.addEventListener('change', function () {
-      $('customName').classList.toggle('show', $('f3').checked);
-      refreshSpecimen();
+  function refreshQuickFonts() {
+    var fwd = mode() === 'fwd';
+    $('qin').className = fwd ? '' : 'legacy';
+    $('qout').className = fwd ? 'legacy' : '';
+    $('qin').style.fontFamily = fwd ? '' : legacyStackRev();
+    $('qout').style.fontFamily = fwd ? legacyStack() : uniStack();
+    $('qinLabel').textContent = fwd ? 'यूनिकोड टेक्स्ट' : 'कृतिदेव / देवलिस टेक्स्ट';
+    $('qoutLabel').textContent = fwd ? 'कृतिदेव / देवलिस टेक्स्ट' : 'यूनिकोड टेक्स्ट';
+    $('qin').placeholder = fwd ? 'यहाँ हिंदी पेस्ट या टाइप करें…' : 'यहाँ कृतिदेव / देवलिस में लिखा टेक्स्ट पेस्ट करें…';
+  }
+  function applyMode() {
+    var m = mode();
+    document.body.setAttribute('data-mode', m);
+    document.documentElement.setAttribute('data-mode', m);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-fwd]'), function (el) {
+      el.textContent = el.getAttribute(m === 'fwd' ? 'data-fwd' : 'data-rev');
     });
+    document.title = 'लिपि सेतु — ' + (m === 'fwd' ? 'यूनिकोड से कृतिदेव / देवलिस' : 'कृतिदेव / देवलिस से यूनिकोड');
+    refreshSpecimen(); refreshQuickFonts(); refreshQuick();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="mode"]'), function (r) { r.addEventListener('change', applyMode); });
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="font"]'), function (r) {
+    r.addEventListener('change', function () { $('customName').classList.toggle('show', $('f3').checked); refreshSpecimen(); refreshQuickFonts(); });
   });
-  $('customName').addEventListener('input', refreshSpecimen);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="ufont"]'), function (r) {
+    r.addEventListener('change', function () { $('customUName').style.display = $('u3').checked ? 'block' : 'none'; refreshSpecimen(); refreshQuickFonts(); });
+  });
+  $('customName').addEventListener('input', function () { refreshSpecimen(); refreshQuickFonts(); });
+  $('customUName').addEventListener('input', function () { refreshSpecimen(); refreshQuickFonts(); });
   $('qin').addEventListener('input', refreshQuick);
   $('copy').addEventListener('click', function () {
     var o = $('qout'), done = function () { $('copy').textContent = 'कॉपी हो गया'; setTimeout(function () { $('copy').textContent = 'कॉपी करें'; }, 1500); };
@@ -865,7 +1251,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(o.value).then(done, function () { o.select(); document.execCommand('copy'); done(); });
     else { o.select(); document.execCommand('copy'); done(); }
   });
-  refreshSpecimen();
+  applyMode();
 
   /* ---------- files ---------- */
   var MIME = {
@@ -879,44 +1265,46 @@ https://github.com/nodeca/pako/blob/main/LICENSE
       fr.readAsArrayBuffer(file);
     });
   }
-  function suffix(font) {
+  function suffix(m, font) {
+    if (m === 'rev') return '_Unicode';
     if (/kruti/i.test(font)) return '_KrutiDev';
     if (/devlys/i.test(font)) return '_Devlys';
     return '_legacy';
   }
+  var items = [];
+  function syncList() { $('listbar').hidden = !items.length; }
+  function removeItem(it) {
+    var i = items.indexOf(it), li = it.li, next = li.nextElementSibling || li.previousElementSibling, target;
+    it.removed = true;
+    if (it.url && window.URL && URL.revokeObjectURL) URL.revokeObjectURL(it.url);      // free the converted file's memory
+    if (li.parentNode) li.parentNode.removeChild(li);
+    if (i >= 0) items.splice(i, 1);
+    syncList();
+    target = next && next.querySelector('.rm');
+    (target || $('pick')).focus();
+  }
   function addItem(file) {
-    var li = document.createElement('li'), name = document.createElement('span'), stat = document.createElement('span');
-    li.className = 'work'; name.className = 'fname'; stat.className = 'fstat';
+    var li = document.createElement('li'), name = document.createElement('span'), stat = document.createElement('span'),
+      acts = document.createElement('div'), rm = document.createElement('button'),
+      it = { li: li, stat: stat, acts: acts, removed: false, url: null };
+    li.className = 'work'; name.className = 'fname'; stat.className = 'fstat'; acts.className = 'acts';
     name.textContent = file.name; stat.textContent = 'बदल रहे हैं…';
-    li.appendChild(name); li.appendChild(stat); $('results').appendChild(li);
-    return { li: li, stat: stat };
+    rm.type = 'button'; rm.className = 'btn ghost rm'; rm.textContent = 'हटाएँ';
+    rm.setAttribute('aria-label', 'सूची से हटाएँ: ' + file.name);
+    rm.addEventListener('click', function () { removeItem(it); });
+    acts.appendChild(rm);
+    li.appendChild(name); li.appendChild(stat); li.appendChild(acts);
+    $('results').appendChild(li); items.push(it); syncList();
+    return it;
   }
   function fail(it, msg) { it.li.className = 'fail'; it.stat.textContent = msg; }
 
-  async function handle(file) {
-    var it = addItem(file), ext = (file.name.split('.').pop() || '').toLowerCase();
-    if (ext === 'doc' || ext === 'xls') { fail(it, 'पुरानी .' + ext + ' फ़ाइल नहीं खुलती। Word / Excel में खोलकर .' + ext + 'x के रूप में सेव करें।'); return; }
-    if (ext !== 'docx' && ext !== 'xlsx') { fail(it, 'सिर्फ़ .docx और .xlsx फ़ाइलें बदली जा सकती हैं।'); return; }
-    try {
-      var font = currentFont();
-      var zip = await JSZip.loadAsync(await readBuffer(file));
-      var stats = ext === 'docx' ? await LipiCore.convertDocx(zip, font) : await LipiCore.convertXlsx(zip, font);
-      if (!stats.parts) { it.li.className = 'done'; it.stat.textContent = 'इस फ़ाइल में यूनिकोड हिंदी नहीं मिली, इसलिए कुछ नहीं बदला।'; return; }
-      var blob = await zip.generateAsync({ type: 'blob', mimeType: MIME[ext], compression: 'DEFLATE', compressionOptions: { level: 6 } });
-      var name = file.name.replace(/\.[^.]+$/, '') + suffix(font) + '.' + ext;
-      it.li.className = 'done';
-      it.stat.textContent = (ext === 'docx' ? stats.parts + ' टेक्स्ट भाग बदले' : stats.parts + ' सेल बदले') + ' · ' + font;
-      await attachDownload(it, blob, name);
-    } catch (e) {
-      fail(it, 'यह फ़ाइल नहीं खुल सकी। शायद वह ख़राब है या पासवर्ड से सुरक्षित है।');
-      if (window.console) console.error(e);
-    }
-  }
   async function attachDownload(it, blob, name) {
+    if (it.removed) return;                       // removed while it was still converting
     var a = document.createElement('a');
     a.className = 'btn'; a.download = name; a.textContent = 'डाउनलोड';
     try {
-      if (window.URL && URL.createObjectURL) a.href = URL.createObjectURL(blob);
+      if (window.URL && URL.createObjectURL) { it.url = URL.createObjectURL(blob); a.href = it.url; }
       else if (navigator.msSaveBlob) {
         a.href = '#';
         a.addEventListener('click', function (e) { e.preventDefault(); navigator.msSaveBlob(blob, name); });
@@ -927,7 +1315,8 @@ https://github.com/nodeca/pako/blob/main/LICENSE
           fr.readAsDataURL(blob);
         });
       }
-      it.li.appendChild(a);
+      if (it.removed) { if (it.url && window.URL && URL.revokeObjectURL) URL.revokeObjectURL(it.url); return; }
+      it.acts.insertBefore(a, it.acts.firstChild);
     } catch (e) {
       it.li.className = 'fail';
       it.stat.textContent = 'फ़ाइल बन गई पर डाउनलोड लिंक नहीं बन सका। यह पेज किसी दूसरे ब्राउज़र (Chrome / Edge / Firefox) में खोलकर देखें।';
@@ -935,10 +1324,35 @@ https://github.com/nodeca/pako/blob/main/LICENSE
     }
   }
 
-  async function handleAll(list) {
-    var files = Array.prototype.slice.call(list);
-    for (var i = 0; i < files.length; i++) await handle(files[i]);
+  async function handle(file, m, font) {
+    var it = addItem(file), ext = (file.name.split('.').pop() || '').toLowerCase();
+    if (ext === 'doc' || ext === 'xls') { fail(it, 'पुरानी .' + ext + ' फ़ाइल नहीं खुलती। Word / Excel में खोलकर .' + ext + 'x के रूप में सेव करें।'); return; }
+    if (ext !== 'docx' && ext !== 'xlsx') { fail(it, 'सिर्फ़ .docx और .xlsx फ़ाइलें बदली जा सकती हैं।'); return; }
+    try {
+      var zip = await JSZip.loadAsync(await readBuffer(file)), stats;
+      if (m === 'fwd') stats = ext === 'docx' ? await LipiCore.convertDocx(zip, font) : await LipiCore.convertXlsx(zip, font);
+      else stats = ext === 'docx' ? await LipiCore.convertDocxToUnicode(zip, font) : await LipiCore.convertXlsxToUnicode(zip, font);
+      if (!stats.parts) {
+        it.li.className = 'done';
+        it.stat.textContent = m === 'fwd' ? 'इस फ़ाइल में यूनिकोड हिंदी नहीं मिली, इसलिए कुछ नहीं बदला।'
+          : 'इस फ़ाइल में Kruti Dev / Devlys फ़ॉन्ट वाला टेक्स्ट नहीं मिला, इसलिए कुछ नहीं बदला।';
+        return;
+      }
+      var blob = await zip.generateAsync({ type: 'blob', mimeType: MIME[ext], compression: 'DEFLATE', compressionOptions: { level: 6 } });
+      var name = file.name.replace(/\.[^.]+$/, '') + suffix(m, font) + '.' + ext;
+      it.li.className = 'done';
+      it.stat.textContent = (ext === 'docx' ? stats.parts + ' टेक्स्ट भाग बदले' : stats.parts + ' सेल बदले') + ' · ' + font;
+      await attachDownload(it, blob, name);
+    } catch (e) {
+      fail(it, 'यह फ़ाइल नहीं खुल सकी। शायद वह ख़राब है या पासवर्ड से सुरक्षित है।');
+      if (window.console) console.error(e);
+    }
   }
+  async function handleAll(list) {
+    var files = Array.prototype.slice.call(list), m = mode(), font = m === 'fwd' ? legacyFont() : uniFont();
+    for (var i = 0; i < files.length; i++) await handle(files[i], m, font);
+  }
+  $('clearAll').addEventListener('click', function () { items.slice().forEach(removeItem); });
   $('pick').addEventListener('click', function () { $('fileInput').click(); });
   $('fileInput').addEventListener('change', function () { handleAll(this.files); this.value = ''; });
   var drop = $('drop');
